@@ -85,7 +85,7 @@ class MessageRepository(BaseRepository[Message]):
         user_id: uuid.UUID,
         embedding: list[float],
         top_k: int = 5,
-    ) -> list[MemoryEmbedding]:
+    ) -> list[dict]:
         from sqlalchemy import text
 
         # pgvector expects the embedding as a string like '[0.1, 0.2, ...]'
@@ -111,7 +111,7 @@ class MessageRepository(BaseRepository[Message]):
             },
         )
         rows = result.mappings().all()
-        return rows
+        return [dict(row) for row in rows]
 
     async def get_latest_summary(
         self, conversation_id: uuid.UUID

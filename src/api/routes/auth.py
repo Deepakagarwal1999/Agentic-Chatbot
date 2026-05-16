@@ -1,15 +1,12 @@
-from typing import Annotated
-
 import structlog
 from fastapi import APIRouter, Depends, HTTPException
 
 from src.api.deps import get_user_repo
 from src.core.exceptions import AppError
 from src.schemas.auth import (
+    TokenResponse,
     UserLoginRequest,
     UserRegisterRequest,
-    UserResponse,
-    TokenResponse,
 )
 from src.services import auth as auth_service
 

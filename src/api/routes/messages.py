@@ -9,11 +9,10 @@ from src.api.deps import (
     get_current_user_id,
     get_message_repo,
 )
-from src.core.exceptions import AppError
 from src.core.di import get_orchestrator, get_retriever
+from src.core.exceptions import AppError
 from src.schemas.message import (
     MessageListResponse,
-    MessageResponse,
     MessageSendRequest,
 )
 from src.services import message as message_service

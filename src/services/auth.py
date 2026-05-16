@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
 import structlog
 from jose import JWTError, jwt
@@ -68,14 +68,20 @@ async def register_user(
         raise ConflictError("A user with this email already exists")
 
     hashed = await hash_password(password)
-    user = await user_repo.create(email=email, display_name=display_name, hashed_password=hashed)
+    user = await user_repo.create(
+        email=email, display_name=display_name, hashed_password=hashed
+    )
     logger.info("user_registered", user_id=str(user.id))
 
     token = create_access_token(str(user.id))
     return {
         "access_token": token,
         "token_type": "bearer",
-        "user": {"id": str(user.id), "email": user.email, "display_name": user.display_name},
+        "user": {
+            "id": str(user.id),
+            "email": user.email,
+            "display_name": user.display_name,
+        },
     }
 
 
@@ -93,5 +99,9 @@ async def login_user(user_repo, email: str, password: str) -> dict:
     return {
         "access_token": token,
         "token_type": "bearer",
-        "user": {"id": str(user.id), "email": user.email, "display_name": user.display_name},
+        "user": {
+            "id": str(user.id),
+            "email": user.email,
+            "display_name": user.display_name,
+        },
     }

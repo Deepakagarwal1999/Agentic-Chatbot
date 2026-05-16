@@ -18,10 +18,11 @@ async def get_checkpointer() -> AsyncPostgresSaver:
     if _saver_instance is None:
         conn_string = settings.database_url.replace("+asyncpg", "")
         _saver_context = AsyncPostgresSaver.from_conn_string(conn_string)
-        _saver_instance = await _saver_context.__aenter__()  # type: ignore[union-attr]
-        await _saver_instance.setup()
+        saver = await _saver_context.__aenter__()  # type: ignore[union-attr]
+        await saver.setup()  # type: ignore[union-attr]
+        _saver_instance = saver  # type: ignore[assignment]
         logger.info("checkpointer_initialized")
-    return _saver_instance
+    return _saver_instance  # type: ignore[return-value]
 
 
 async def close_checkpointer() -> None:

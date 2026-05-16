@@ -1,8 +1,15 @@
 from functools import lru_cache
+from typing import Any
 
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_openai import ChatOpenAI
+
+try:
+    from langchain_nvidia_ai_endpoints import (  # pyright: ignore[reportMissingImports]
+        ChatNVIDIA,
+    )
+except ImportError:  # pragma: no cover
+    ChatNVIDIA: Any = None  # type: ignore[no-redef]
 
 from src.agent.graph import build_agent_graph
 from src.agent.orchestrator import AgentOrchestrator, create_orchestrator
@@ -20,6 +27,11 @@ _orchestrator_instance: AgentOrchestrator | None = None
 def _build_llm() -> BaseChatModel:
     """Build the language model used by the agent."""
     if settings.llm_provider == "nvidia":
+        if ChatNVIDIA is None:
+            raise ImportError(
+                "langchain-nvidia-ai-endpoints is required for the nvidia provider. "
+                "Install it with: pip install langchain-nvidia-ai-endpoints"
+            )
         return ChatNVIDIA(
             model=settings.llm_model,
             api_key=settings.llm_api_key.get_secret_value()

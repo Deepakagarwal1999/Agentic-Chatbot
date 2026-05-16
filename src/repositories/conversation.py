@@ -11,7 +11,9 @@ class ConversationRepository(BaseRepository[Conversation]):
     def __init__(self, session: AsyncSession):
         super().__init__(session, Conversation)
 
-    async def get_by_user_and_id(self, user_id: uuid.UUID, conversation_id: uuid.UUID) -> Conversation | None:
+    async def get_by_user_and_id(
+        self, user_id: uuid.UUID, conversation_id: uuid.UUID
+    ) -> Conversation | None:
         result = await self.session.execute(
             select(Conversation).where(
                 Conversation.id == conversation_id,
@@ -46,7 +48,9 @@ class ConversationRepository(BaseRepository[Conversation]):
         result = await self.session.execute(query)
         return list(result.scalars().all()), total
 
-    async def create(self, user_id: uuid.UUID, title: str | None = None) -> Conversation:
+    async def create(
+        self, user_id: uuid.UUID, title: str | None = None
+    ) -> Conversation:
         conversation = Conversation(user_id=user_id, title=title)
         self.session.add(conversation)
         await self.session.flush()

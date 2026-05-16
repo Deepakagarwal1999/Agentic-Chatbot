@@ -1,27 +1,39 @@
 import asyncio
 import uuid
+from typing import Any
 
 import structlog
-from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 from langchain_openai import OpenAIEmbeddings
 
 from src.core.config import get_settings
 from src.models.message import MemoryEmbedding, Message
 
+try:
+    from langchain_nvidia_ai_endpoints import (  # pyright: ignore[reportMissingImports]
+        NVIDIAEmbeddings,
+    )
+except ImportError:  # pragma: no cover
+    NVIDIAEmbeddings: Any = None  # type: ignore[no-redef]
+
 logger = structlog.get_logger(__name__)
 settings = get_settings()
 
 
-_embeddings_instance: OpenAIEmbeddings | NVIDIAEmbeddings | None = None
+_embeddings_instance: Any = None
 
 
-def _get_embeddings() -> OpenAIEmbeddings | NVIDIAEmbeddings:
+def _get_embeddings() -> Any:
     global _embeddings_instance
     if _embeddings_instance is None:
-        api_key = (
+        api_key: Any = (
             settings.llm_api_key.get_secret_value() if settings.llm_api_key else None
         )
         if settings.embedding_provider == "nvidia":
+            if NVIDIAEmbeddings is None:
+                raise ImportError(
+                    "langchain-nvidia-ai-endpoints is required for the nvidia embedding provider. "
+                    "Install it with: pip install langchain-nvidia-ai-endpoints"
+                )
             _embeddings_instance = NVIDIAEmbeddings(
                 model=settings.embedding_model,
                 api_key=api_key,

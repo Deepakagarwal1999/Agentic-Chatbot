@@ -2,7 +2,7 @@ import uuid
 
 import structlog
 
-from src.core.exceptions import ForbiddenError, NotFoundError
+from src.core.exceptions import NotFoundError
 from src.models.conversation import Conversation, ConversationStatus
 
 logger = structlog.get_logger(__name__)
@@ -14,7 +14,11 @@ async def create_conversation(
     title: str | None = None,
 ) -> Conversation:
     conversation = await conversation_repo.create(user_id=user_id, title=title)
-    logger.info("conversation_created", conversation_id=str(conversation.id), user_id=str(user_id))
+    logger.info(
+        "conversation_created",
+        conversation_id=str(conversation.id),
+        user_id=str(user_id),
+    )
     return conversation
 
 

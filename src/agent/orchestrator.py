@@ -1,8 +1,8 @@
 import traceback
-from typing import AsyncGenerator
+from typing import Any, AsyncGenerator
 
 import structlog
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from langgraph.graph.state import CompiledStateGraph
 
 from src.agent.prompts import CONTEXT_TEMPLATE
@@ -20,25 +20,28 @@ class AgentOrchestrator:
         thread_id: str,
         long_term_context: str = "",
     ) -> AsyncGenerator[str, None]:
-        messages = [HumanMessage(content=user_input)]
+        messages: list[BaseMessage] = [HumanMessage(content=user_input)]
 
         if long_term_context:
             context_prompt = CONTEXT_TEMPLATE.format(context=long_term_context)
             messages.insert(0, SystemMessage(content=context_prompt))
 
-        config = {"configurable": {"thread_id": thread_id}}
+        config: dict[str, Any] = {"configurable": {"thread_id": thread_id}}
 
         try:
             async for event in self.graph.astream_events(
                 {"messages": messages},
-                config=config,
+                config=config,  # type: ignore[arg-type]
                 version="v2",
             ):
                 kind = event.get("event")
                 if kind == "on_chat_model_stream":
-                    content = event["data"]["chunk"].content
-                    if content:
-                        yield content
+                    data = event.get("data", {})
+                    chunk = data.get("chunk")  # type: ignore[union-attr]
+                    if chunk is not None:
+                        content = chunk.content
+                        if content:
+                            yield content
 
         except Exception as exc:
             logger.error(

@@ -18,7 +18,9 @@ class Message(Base, UUIDMixin):
     conversation_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("conversations.id"), index=True, nullable=False
     )
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), index=True, nullable=False
+    )
     role: Mapped[str] = mapped_column(Text, nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     tool_calls: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
@@ -31,11 +33,15 @@ class Message(Base, UUIDMixin):
 class MemoryEmbedding(Base, UUIDMixin):
     __tablename__ = "memory_embeddings"
 
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), index=True, nullable=False
+    )
     conversation_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("conversations.id"), nullable=False
     )
-    message_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("messages.id"), nullable=False)
+    message_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("messages.id"), nullable=False
+    )
     content: Mapped[str] = mapped_column(Text, nullable=False)
     embedding = mapped_column(Vector(settings.embedding_dimensions), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
