@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "deep-agents-memory": {
+      "source": "langchain-ai/langchain-skills",
+      "sourceType": "github",
+      "skillPath": "config/skills/deep-agents-memory/SKILL.md",
+      "computedHash": "c4fccc7409e8b80bb5f6dbf18b677ea55b7ab8515cb734f3141205ceccb8c2ee"
+    },
+    "langgraph-docs": {
+      "source": "langchain-ai/deepagents",
+      "sourceType": "github",
+      "skillPath": "libs/cli/examples/skills/langgraph-docs/SKILL.md",
+      "computedHash": "bc33fbf2b3d1b0f8a93d2ccc52e1fef3ba193059418bccf9583f0c71780f6985"
+    },
+    "python-performance-optimization": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "skillPath": "plugins/python-development/skills/python-performance-optimization/SKILL.md",
+      "computedHash": "6390615b25e5922057b15eb900d69a90db563c5f2d6bd3182be707592fc25f09"
+    },
+    "web-research": {
+      "source": "langchain-ai/deepagents",
+      "sourceType": "github",
+      "skillPath": "libs/cli/examples/skills/web-research/SKILL.md",
+      "computedHash": "c91e55da8a6e313c9ec9962ec2699ccef5caee1ea15c9d7a71db6274ab7c90b6"
+    }
+  }
+}

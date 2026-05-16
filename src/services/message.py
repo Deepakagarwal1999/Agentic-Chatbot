@@ -1,0 +1,139 @@
+import uuid
+from typing import AsyncGenerator
+
+import structlog
+
+from src.core.config import get_settings
+from src.core.exceptions import NotFoundError
+from src.repositories.conversation import ConversationRepository
+from src.repositories.message import MessageRepository
+
+logger = structlog.get_logger(__name__)
+settings = get_settings()
+
+
+async def list_messages(
+    message_repo: MessageRepository,
+    conversation_id: uuid.UUID,
+    offset: int = 0,
+    limit: int = 50,
+) -> tuple[list, int]:
+    messages, total = await message_repo.list_by_conversation(
+        conversation_id=conversation_id, offset=offset, limit=limit
+    )
+    return messages, total
+
+
+async def send_message_stream(
+    message_repo: MessageRepository,
+    conversation_repo: ConversationRepository,
+    user_id: uuid.UUID,
+    conversation_id: uuid.UUID,
+    content: str,
+    orchestrator,  # Agent orchestrator
+    memory_retriever,  # Memory retriever
+) -> AsyncGenerator[str, None]:
+    conversation = await conversation_repo.get_by_user_and_id(user_id, conversation_id)
+    if not conversation:
+        raise NotFoundError("Conversation", str(conversation_id))
+
+    user_message = await message_repo.create(
+        conversation_id=conversation_id,
+        user_id=user_id,
+        role="user",
+        content=content,
+    )
+
+    thread_id = str(conversation_id)
+
+    long_term_context = await memory_retriever.retrieve_context(
+        user_id=str(user_id),
+        conversation_id=str(conversation_id),
+        query=content,
+    )
+
+    # Use a list to collect chunks for improved performance when concatenating strings
+    response_parts = []
+    async for token in orchestrator.stream(
+        user_input=content,
+        thread_id=thread_id,
+        long_term_context=long_term_context,
+    ):
+        response_parts.append(token)
+        yield token
+
+    # Build the full response only once at the end to avoid O(N^2) string concatenation
+    full_response = "".join(response_parts)
+
+    assistant_message = await message_repo.create(
+        conversation_id=conversation_id,
+        user_id=user_id,
+        role="assistant",
+        content=full_response,
+    )
+
+    await _update_message_count_and_title(conversation_repo, conversation, content)
+
+    # Index both messages (user and assistant) via a helper, batching commit if possible
+    from src.memory.long_term import index_message
+    await index_message(
+        message_repo=message_repo,
+        user_id=user_id,
+        conversation_id=conversation_id,
+        message=user_message,
+    )
+    await index_message(
+        message_repo=message_repo,
+        user_id=user_id,
+        conversation_id=conversation_id,
+        message=assistant_message,
+    )
+
+    await _maybe_trigger_summary(message_repo, conversation, conversation_id)
+
+    logger.info(
+        "message_processed",
+        conversation_id=str(conversation_id),
+        user_id=str(user_id),
+        response_length=len(full_response),
+    )
+
+
+async def search_memory(
+    message_repo: MessageRepository,
+    user_id: uuid.UUID,
+    query: str,
+    top_k: int = 5,
+    embed_fn=None,
+) -> list[dict]:
+    if embed_fn is None:
+        return []
+
+    embedding = await embed_fn(query)
+    results = await message_repo.search_similar_messages(
+        user_id=user_id,
+        embedding=embedding,
+        top_k=top_k,
+    )
+    return results
+
+
+async def _update_message_count_and_title(conversation_repo, conversation, first_message: str):
+    new_count = (conversation.message_count or 0) + 2
+    updates = {"message_count": new_count}
+
+    if conversation.title is None and conversation.message_count == 0:
+        # Only slice if the string is long enough (>200)
+        title = first_message[:200] if len(first_message) > 200 else first_message
+        updates["title"] = title
+
+    await conversation_repo.update(conversation, **updates)
+
+
+async def _maybe_trigger_summary(message_repo, conversation, conversation_id):
+    if conversation.message_count >= settings.summary_trigger_message_count:
+        recent = await message_repo.get_recent_by_conversation(
+            conversation_id=conversation_id, limit=settings.summary_trigger_message_count
+        )
+        if recent:
+            logger.info("summary_triggered", conversation_id=str(conversation_id))
