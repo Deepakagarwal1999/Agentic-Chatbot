@@ -1,8 +1,8 @@
 import uuid
 
 import structlog
-from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.language_models import BaseChatModel
+from langchain_core.messages import HumanMessage, SystemMessage
 
 logger = structlog.get_logger(__name__)
 
@@ -36,10 +36,12 @@ async def generate_summary(
             f"[{msg.role}]: {msg.content[:300]}" for msg in recent_messages
         )
 
-        response = await llm.ainvoke([
-            SystemMessage(content=SUMMARY_SYSTEM_PROMPT),
-            HumanMessage(content=f"Conversation:\n{conversation_text}"),
-        ])
+        response = await llm.ainvoke(
+            [
+                SystemMessage(content=SUMMARY_SYSTEM_PROMPT),
+                HumanMessage(content=f"Conversation:\n{conversation_text}"),
+            ]
+        )
 
         summary_text = str(response.content)
         await message_repo.upsert_summary(

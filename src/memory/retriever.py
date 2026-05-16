@@ -35,6 +35,7 @@ class MemoryRetriever:
         )
 
         from src.memory.long_term import embed_text
+
         semantic_results = []
         try:
             embedding = await embed_text(query)

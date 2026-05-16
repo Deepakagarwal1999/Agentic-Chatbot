@@ -1,13 +1,13 @@
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException
 
 from src.api.deps import get_current_user_id, get_message_repo
 from src.core.exceptions import AppError
+from src.memory.long_term import embed_text
 from src.schemas.message import MemorySearchRequest, MemorySearchResult
 from src.services import message as message_service
-from src.memory.long_term import embed_text
 
 router = APIRouter(prefix="/api/memory", tags=["memory"])
 

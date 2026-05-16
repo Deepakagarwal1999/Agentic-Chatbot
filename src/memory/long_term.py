@@ -18,7 +18,9 @@ _embeddings_instance: OpenAIEmbeddings | NVIDIAEmbeddings | None = None
 def _get_embeddings() -> OpenAIEmbeddings | NVIDIAEmbeddings:
     global _embeddings_instance
     if _embeddings_instance is None:
-        api_key = settings.llm_api_key.get_secret_value() if settings.llm_api_key else None
+        api_key = (
+            settings.llm_api_key.get_secret_value() if settings.llm_api_key else None
+        )
         if settings.embedding_provider == "nvidia":
             _embeddings_instance = NVIDIAEmbeddings(
                 model=settings.embedding_model,
@@ -67,8 +69,12 @@ async def index_message(
                 )
             )
         except Exception as exc:
-            logger.warning("embedding_index_failed", error=str(exc), message_id=str(message.id))
+            logger.warning(
+                "embedding_index_failed", error=str(exc), message_id=str(message.id)
+            )
 
     if embedding_objects:
         await message_repo.bulk_create_memory_embeddings(embedding_objects)
-        logger.debug("messages_indexed", count=len(embedding_objects), message_id=str(message.id))
+        logger.debug(
+            "messages_indexed", count=len(embedding_objects), message_id=str(message.id)
+        )

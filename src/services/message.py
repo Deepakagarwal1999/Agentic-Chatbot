@@ -76,6 +76,7 @@ async def send_message_stream(
 
     # Index both messages (user and assistant) via a helper, batching commit if possible
     from src.memory.long_term import index_message
+
     await index_message(
         message_repo=message_repo,
         user_id=user_id,
@@ -118,7 +119,9 @@ async def search_memory(
     return results
 
 
-async def _update_message_count_and_title(conversation_repo, conversation, first_message: str):
+async def _update_message_count_and_title(
+    conversation_repo, conversation, first_message: str
+):
     new_count = (conversation.message_count or 0) + 2
     updates = {"message_count": new_count}
 
@@ -133,7 +136,8 @@ async def _update_message_count_and_title(conversation_repo, conversation, first
 async def _maybe_trigger_summary(message_repo, conversation, conversation_id):
     if conversation.message_count >= settings.summary_trigger_message_count:
         recent = await message_repo.get_recent_by_conversation(
-            conversation_id=conversation_id, limit=settings.summary_trigger_message_count
+            conversation_id=conversation_id,
+            limit=settings.summary_trigger_message_count,
         )
         if recent:
             logger.info("summary_triggered", conversation_id=str(conversation_id))
