@@ -5,7 +5,7 @@ import ChatWindow from '../components/ChatWindow';
 import InputBar from '../components/InputBar';
 import * as conversationsApi from '../api/conversations';
 import * as messagesApi from '../api/messages';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, AlertCircle } from 'lucide-react';
 
 export default function ChatPage() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -108,6 +108,17 @@ export default function ChatPage() {
         }
     };
 
+    const handleRenameConversation = async (id, newTitle) => {
+        try {
+            const updated = await conversationsApi.updateConversation(id, { title: newTitle });
+            setConversations(prev =>
+                prev.map(c => (c.id === id ? { ...c, title: updated.title } : c))
+            );
+        } catch (err) {
+            setError(err.message || 'Failed to rename conversation');
+        }
+    };
+
     const handleSendMessage = async (content) => {
         let convId = activeConversationId;
 
@@ -152,11 +163,11 @@ export default function ChatPage() {
     };
 
     return (
-        <div className="flex h-screen bg-white">
+        <div className="flex h-screen bg-white overflow-hidden">
             {/* Mobile sidebar overlay */}
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden animate-fade-in-up"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
@@ -170,41 +181,64 @@ export default function ChatPage() {
                     onSelect={handleSelectConversation}
                     onCreate={handleCreateConversation}
                     onDelete={handleDeleteConversation}
+                    onRename={handleRenameConversation}
                     loading={loadingConversations}
+                    onClose={() => setSidebarOpen(false)}
                 />
             </div>
 
             <main className="flex-1 flex flex-col min-w-0">
                 {/* Header */}
-                <header className="h-14 border-b border-surface-200 flex items-center px-4 lg:px-6 bg-white/80 backdrop-blur-sm flex-shrink-0">
+                <header className="h-14 border-b border-surface-200/80 flex items-center px-4 lg:px-6 bg-white flex-shrink-0">
                     <button
                         onClick={() => setSidebarOpen(true)}
-                        className="lg:hidden p-2 -ml-2 mr-2 text-surface-600 hover:text-surface-900 hover:bg-surface-100 rounded-lg transition-all"
+                        className="lg:hidden p-2 -ml-2 mr-3 text-surface-500 hover:text-surface-800 hover:bg-surface-100 rounded-lg transition-all"
+                        aria-label="Open sidebar"
                     >
                         <Menu size={20} />
                     </button>
                     <div className="flex-1 min-w-0">
-                        <h1 className="font-semibold text-surface-800 truncate">
+                        <h1 className="font-semibold text-surface-800 truncate text-[15px]">
                             {activeConversation ? (activeConversation.title || 'Untitled Conversation') : 'Select a Conversation'}
                         </h1>
                         {activeConversation && (
-                            <p className="text-xs text-surface-400">
+                            <p className="text-[11px] text-surface-400 mt-0.5">
                                 {activeConversation.message_count || 0} messages
                             </p>
                         )}
                     </div>
+                    {isStreaming && (
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-50 border border-primary-200 rounded-full">
+                            <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                            <span className="text-[11px] font-medium text-primary-700">Generating</span>
+                        </div>
+                    )}
                 </header>
 
                 {/* Error display */}
                 {error && (
-                    <div className="bg-red-50 border-b border-red-200 px-6 py-3 flex items-center justify-between">
-                        <p className="text-sm text-red-700">{error}</p>
+                    <div className="bg-red-50 border-b border-red-200/80 px-4 lg:px-6 py-3 flex items-center justify-between animate-slide-in-left">
+                        <div className="flex items-center gap-2">
+                            <AlertCircle size={15} className="text-red-500 flex-shrink-0" />
+                            <p className="text-sm text-red-700">{error}</p>
+                        </div>
                         <button
                             onClick={() => setError('')}
-                            className="text-red-400 hover:text-red-600 transition-colors"
+                            className="p-1 text-red-400 hover:text-red-600 hover:bg-red-100 rounded-md transition-colors"
+                            aria-label="Dismiss error"
                         >
-                            <X size={16} />
+                            <X size={14} />
                         </button>
+                    </div>
+                )}
+
+                {/* Messages loading state */}
+                {loadingMessages && (
+                    <div className="flex items-center justify-center py-8">
+                        <div className="flex items-center gap-3">
+                            <div className="w-5 h-5 border-2 border-surface-200 border-t-primary-500 rounded-full animate-spin"></div>
+                            <span className="text-sm text-surface-400">Loading messages...</span>
+                        </div>
                     </div>
                 )}
 

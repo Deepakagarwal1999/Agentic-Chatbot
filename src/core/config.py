@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     llm_model: str = "nvidia/llama-3.1-nemotron-70b-instruct"
     llm_api_key: SecretStr = SecretStr("")
     llm_temperature: float = 0.7
+    llm_max_retries: int = 3
 
     embedding_provider: Literal["openai", "nvidia"] = "nvidia"
     embedding_model: str = "text-embedding-3-small"

@@ -38,11 +38,13 @@ def _build_llm() -> BaseChatModel:
             if settings.llm_api_key
             else None,
             temperature=settings.llm_temperature,
+            max_retries=settings.llm_max_retries,
         )
     return ChatOpenAI(
         model=settings.llm_model,
         api_key=settings.llm_api_key,
         temperature=settings.llm_temperature,
+        max_retries=settings.llm_max_retries,
     )
 
 

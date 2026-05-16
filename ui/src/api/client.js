@@ -28,6 +28,11 @@ export async function apiRequest(endpoint, options = {}) {
     }
 
     if (!response.ok) {
+        // If we get a 401, the token is invalid/expired — clear it and redirect to login
+        if (response.status === 401) {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
         const error = new Error(data?.detail || 'An error occurred');
         error.status = response.status;
         error.data = data;
