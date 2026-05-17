@@ -157,7 +157,8 @@ body,
 
 /* Markdown content styling inside messages */
 .prose-message {
-    line-height: 1.7;
+    line-height: 1.75;
+    word-break: break-word;
 }
 
 .prose-message p {
@@ -170,20 +171,49 @@ body,
 
 .prose-message code {
     font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-    font-size: 0.85em;
-    background: rgba(99, 102, 241, 0.08);
-    border: 1px solid rgba(99, 102, 241, 0.12);
-    padding: 0.15em 0.4em;
-    border-radius: 4px;
+    font-size: 0.82em;
+    background: rgba(99, 102, 241, 0.07);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    padding: 0.2em 0.45em;
+    border-radius: 6px;
     font-weight: 500;
 }
 
-.prose-message pre {
-    margin: 0.75em 0;
-    border-radius: 12px;
+.prose-message .code-block-wrapper {
+    position: relative;
+    margin: 1em 0;
+    border-radius: 14px;
     overflow: hidden;
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.prose-message .code-block-wrapper .code-lang {
+    display: block;
+    padding: 0.5em 1em;
+    font-size: 0.7em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
     background: #1e293b;
-    border: 1px solid #334155;
+    border-bottom: 1px solid #334155;
+}
+
+.prose-message pre {
+    margin: 0;
+    border-radius: 0;
+    overflow: hidden;
+    background: transparent;
+    border: none;
+}
+
+.prose-message .code-block-wrapper pre {
+    margin: 0;
+    border-radius: 0;
+    background: transparent;
+    border: none;
 }
 
 .prose-message pre code {
@@ -192,8 +222,8 @@ body,
     background: transparent;
     border: none;
     color: #e2e8f0;
-    font-size: 0.82em;
-    line-height: 1.6;
+    font-size: 0.8em;
+    line-height: 1.7;
     overflow-x: auto;
     white-space: pre;
 }
@@ -205,63 +235,80 @@ body,
 }
 
 .prose-message li {
-    margin-bottom: 0.25em;
+    margin-bottom: 0.35em;
+    padding-left: 0.25em;
 }
 
 .prose-message ul li {
     list-style-type: disc;
 }
 
+.prose-message ul li::marker {
+    color: #818cf8;
+}
+
 .prose-message ol li {
     list-style-type: decimal;
 }
 
+.prose-message ol li::marker {
+    color: #818cf8;
+    font-weight: 600;
+}
+
 .prose-message blockquote {
     border-left: 3px solid #818cf8;
-    padding-left: 1em;
+    padding: 0.5em 1em;
     margin: 0.75em 0;
     color: #64748b;
     font-style: italic;
+    background: rgba(99, 102, 241, 0.03);
+    border-radius: 0 8px 8px 0;
 }
 
 .prose-message h1,
 .prose-message h2,
 .prose-message h3 {
-    font-weight: 600;
-    margin-top: 1em;
+    font-weight: 700;
+    margin-top: 1.25em;
     margin-bottom: 0.5em;
+    color: #1e293b;
 }
 
 .prose-message h1 {
-    font-size: 1.25em;
+    font-size: 1.3em;
 }
 
 .prose-message h2 {
-    font-size: 1.1em;
+    font-size: 1.15em;
 }
 
 .prose-message h3 {
-    font-size: 1em;
+    font-size: 1.05em;
 }
 
 .prose-message a {
     color: #6366f1;
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(99, 102, 241, 0.3);
+    transition: text-decoration-color 0.15s;
 }
 
 .prose-message a:hover {
     color: #4f46e5;
+    text-decoration-color: #4f46e5;
 }
 
 .prose-message strong {
-    font-weight: 600;
+    font-weight: 700;
+    color: #1e293b;
 }
 
 .prose-message hr {
     border: none;
     border-top: 1px solid #e2e8f0;
-    margin: 1em 0;
+    margin: 1.25em 0;
 }
 
 /* User message prose overrides (white text) */

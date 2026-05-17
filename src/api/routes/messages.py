@@ -65,7 +65,11 @@ async def send_message(
             ):
                 if await request.is_disconnected():
                     break
-                yield {"data": token}
+                if token.startswith("__TITLE__:"):
+                    title = token[len("__TITLE__:") :]
+                    yield {"event": "title", "data": title}
+                else:
+                    yield {"data": token}
 
             yield {"data": "[DONE]"}
 

@@ -29,47 +29,48 @@ export async function* streamMessage(conversationId, content) {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
+    let currentEvent = null;
 
     while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
         buffer += decoder.decode(value, { stream: true });
-        // SSE lines are separated by newlines
-        // Format: data: <text>\n\n or event: error\ndata: ...
         const lines = buffer.split('\n');
-        // Keep the last partial line in the buffer
         buffer = lines.pop() || '';
 
         for (const line of lines) {
             const trimmed = line.trim();
             if (!trimmed) continue;
-            
-            // Handle event: error
+
             if (trimmed.startsWith('event: ')) {
-                const eventType = trimmed.slice(7).trim();
-                if (eventType === 'error') {
-                    // Error data will be on the next data: line
-                    continue; 
-                }
+                currentEvent = trimmed.slice(7).trim();
+                continue;
             }
-            
-            // Handle data: ...
+
             if (trimmed.startsWith('data: ')) {
                 const data = trimmed.slice(6);
                 if (data === '[DONE]') return;
-                yield data;
+
+                if (currentEvent === 'title') {
+                    yield { type: 'title', data };
+                    currentEvent = null;
+                } else if (currentEvent === 'error') {
+                    currentEvent = null;
+                } else {
+                    yield { type: 'token', data };
+                }
+                currentEvent = null;
             }
         }
     }
 
-    // Process any final buffered data
     if (buffer.trim()) {
         const trimmed = buffer.trim();
         if (trimmed.startsWith('data: ')) {
             const data = trimmed.slice(6);
             if (data === '[DONE]') return;
-            yield data;
+            yield { type: 'token', data };
         }
     }
 }

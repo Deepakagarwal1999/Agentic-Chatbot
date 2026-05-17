@@ -72,7 +72,11 @@ async def send_message_stream(
         content=full_response,
     )
 
-    await _update_message_count_and_title(conversation_repo, conversation, content)
+    title = await _update_message_count_and_title(
+        conversation_repo, conversation, content, full_response
+    )
+    if title:
+        yield f"__TITLE__:{title}"
 
     # Index both messages (user and assistant) via a helper, batching commit if possible
     from src.memory.long_term import index_message
@@ -120,17 +124,56 @@ async def search_memory(
 
 
 async def _update_message_count_and_title(
-    conversation_repo, conversation, first_message: str
-):
+    conversation_repo, conversation, user_message: str, assistant_response: str
+) -> str | None:
+    """Update message count and generate title for new conversations. Returns title if generated."""
     new_count = (conversation.message_count or 0) + 2
     updates = {"message_count": new_count}
+    title = None
 
-    if conversation.title is None and conversation.message_count == 0:
-        # Only slice if the string is long enough (>200)
-        title = first_message[:200] if len(first_message) > 200 else first_message
+    if conversation.title == "New Conversation" or conversation.message_count == 0:
+        title = await _generate_title(user_message, assistant_response)
         updates["title"] = title
 
     await conversation_repo.update(conversation, **updates)
+    return title
+
+
+async def _generate_title(user_message: str, assistant_response: str) -> str:
+    """Generate a short conversation title (max 3 words) based on the conversation."""
+    try:
+        from src.core.di import _build_llm
+
+        llm = _build_llm()
+        response = await llm.ainvoke(
+            [
+                {
+                    "role": "system",
+                    "content": (
+                        "Generate a concise title (maximum 3 words) that captures the topic "
+                        "of the following conversation. Reply with ONLY the title, "
+                        "no quotes, no punctuation, no explanation."
+                    ),
+                },
+                {"role": "user", "content": user_message[:500]},
+                {"role": "assistant", "content": assistant_response[:500]},
+                {
+                    "role": "user",
+                    "content": "Based on this conversation, generate a title in 3 words or less.",
+                },
+            ]
+        )
+        title = response.content.strip().strip('"').strip("'")
+        # Enforce 3-word limit
+        words = title.split()
+        if len(words) > 3:
+            title = " ".join(words[:3])
+        return title
+    except Exception as exc:
+        logger.warning("title_generation_failed", error=str(exc))
+        # Fallback: first few words of the user message
+        words = user_message.split()[:3]
+        return " ".join(words)
 
 
 async def _maybe_trigger_summary(message_repo, conversation, conversation_id):

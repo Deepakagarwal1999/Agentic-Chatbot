@@ -1,0 +1,316 @@
+{
+  "tested_at": "2026-05-16T21:24:15.935510",
+  "total_models": 51,
+  "working_count": 27,
+  "failed_count": 24,
+  "working_models": [
+    {
+      "model": "mistralai/mixtral-8x7b-instruct-v0.1",
+      "status": "working",
+      "response_preview": " Hello there, I hope this message finds you well! Is there something specific you would like to know",
+      "latency_seconds": 3.01
+    },
+    {
+      "model": "upstage/solar-10.7b-instruct",
+      "status": "working",
+      "response_preview": "Greetings from a friendly AI; it's a pleasure to connect with you today.",
+      "latency_seconds": 1.12
+    },
+    {
+      "model": "meta/llama-3.1-8b-instruct",
+      "status": "working",
+      "response_preview": "Hello, how can I assist you today?",
+      "latency_seconds": 0.65
+    },
+    {
+      "model": "meta/llama-3.1-70b-instruct",
+      "status": "working",
+      "response_preview": "Hello, it's nice to meet you.",
+      "latency_seconds": 151.1
+    },
+    {
+      "model": "meta/llama-guard-4-12b",
+      "status": "working",
+      "response_preview": "safe",
+      "latency_seconds": 0.62
+    },
+    {
+      "model": "mistralai/mistral-nemotron",
+      "status": "working",
+      "response_preview": "Hello! How can I help you today?",
+      "latency_seconds": 0.81
+    },
+    {
+      "model": "nvidia/nemotron-mini-4b-instruct",
+      "status": "working",
+      "response_preview": "Hello! How can I assist you today?",
+      "latency_seconds": 0.68
+    },
+    {
+      "model": "nvidia/llama-3.1-nemoguard-8b-content-safety",
+      "status": "working",
+      "response_preview": " ",
+      "latency_seconds": 0.6
+    },
+    {
+      "model": "nvidia/llama-3.1-nemoguard-8b-topic-control",
+      "status": "working",
+      "response_preview": "on-topic ",
+      "latency_seconds": 0.6
+    },
+    {
+      "model": "meta/llama-3.3-70b-instruct",
+      "status": "working",
+      "response_preview": "Hello, it's nice to meet you and I'm here to help with any questions or topics you'd like to discuss",
+      "latency_seconds": 1.03
+    },
+    {
+      "model": "meta/llama-3.2-1b-instruct",
+      "status": "working",
+      "response_preview": "Hello!",
+      "latency_seconds": 0.74
+    },
+    {
+      "model": "meta/llama-3.2-3b-instruct",
+      "status": "working",
+      "response_preview": "Hello!",
+      "latency_seconds": 0.99
+    },
+    {
+      "model": "abacusai/dracarys-llama-3.1-70b-instruct",
+      "status": "working",
+      "response_preview": "Hello, it's nice to meet you!",
+      "latency_seconds": 1.59
+    },
+    {
+      "model": "nvidia/llama-3.1-nemotron-nano-8b-v1",
+      "status": "working",
+      "response_preview": "Sure, I'd be happy to help with that! Here's a simple yet friendly response: \"Hello there! How can I",
+      "latency_seconds": 0.97
+    },
+    {
+      "model": "nvidia/llama-3.3-nemotron-super-49b-v1",
+      "status": "working",
+      "response_preview": "Hello!",
+      "latency_seconds": 1.06
+    },
+    {
+      "model": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+      "status": "working",
+      "response_preview": "",
+      "latency_seconds": 15.66
+    },
+    {
+      "model": "openai/gpt-oss-20b",
+      "status": "working",
+      "response_preview": "",
+      "latency_seconds": 0.98
+    },
+    {
+      "model": "openai/gpt-oss-120b",
+      "status": "working",
+      "response_preview": "",
+      "latency_seconds": 0.88
+    },
+    {
+      "model": "nvidia/nvidia-nemotron-nano-9b-v2",
+      "status": "working",
+      "response_preview": "",
+      "latency_seconds": 1.41
+    },
+    {
+      "model": "bytedance/seed-oss-36b-instruct",
+      "status": "working",
+      "response_preview": "",
+      "latency_seconds": 5.44
+    },
+    {
+      "model": "qwen/qwen3-next-80b-a3b-instruct",
+      "status": "working",
+      "response_preview": "Hello! 😊",
+      "latency_seconds": 0.69
+    },
+    {
+      "model": "qwen/qwen3-next-80b-a3b-thinking",
+      "status": "working",
+      "response_preview": "",
+      "latency_seconds": 0.86
+    },
+    {
+      "model": "nvidia/nemotron-3-nano-30b-a3b",
+      "status": "working",
+      "response_preview": "",
+      "latency_seconds": 0.78
+    },
+    {
+      "model": "stepfun-ai/step-3.5-flash",
+      "status": "working",
+      "response_preview": "",
+      "latency_seconds": 1.11
+    },
+    {
+      "model": "nvidia/nemotron-3-super-120b-a12b",
+      "status": "working",
+      "response_preview": "The user asks: \"Say hello in one sentence.\" So respond with a single sentence greeting. Probably \"He",
+      "latency_seconds": 1.36
+    },
+    {
+      "model": "google/gemma-4-31b-it",
+      "status": "working",
+      "response_preview": "Hello!",
+      "latency_seconds": 32.93
+    },
+    {
+      "model": "microsoft/phi-4-mini-instruct",
+      "status": "working",
+      "response_preview": "Hello there!",
+      "latency_seconds": 0.63
+    }
+  ],
+  "failed_models": [
+    {
+      "model": "google/codegemma-7b",
+      "status": "failed",
+      "error": "[404] Not Found\nFunction '7dfc10a8-3cc4-448e-97c1-2213308dc222': Not found for account 'UzOBNkjp9jtwQfeLy2J4I4QZCKWyr04ygK7SRx6QHSk'",
+      "latency_seconds": 0.4
+    },
+    {
+      "model": "mistralai/mixtral-8x22b-instruct-v0.1",
+      "status": "failed",
+      "error": "[400] Bad Request\nFunction id '710c92d0-7c98-46d6-b5ae-07e84bcaa5d3': DEGRADED function cannot be invoked",
+      "latency_seconds": 0.4
+    },
+    {
+      "model": "mistralai/mixtral-8x22b-v0.1",
+      "status": "failed",
+      "error": "[404] Not Found\nFunction id '39655fc1-9ebc-4b24-963e-6915ea6680de' version 'null': Specified function in account 'UzOBNkjp9jtwQfeLy2J4I4QZCKWyr04ygK7S",
+      "latency_seconds": 0.42
+    },
+    {
+      "model": "mistralai/mistral-7b-instruct-v0.3",
+      "status": "failed",
+      "error": "[404] Not Found\nFunction id 'cd89bd68-13e3-47a9-861e-9a62e6e14b05' version 'null': Specified function in account 'UzOBNkjp9jtwQfeLy2J4I4QZCKWyr04ygK7S",
+      "latency_seconds": 0.4
+    },
+    {
+      "model": "01-ai/yi-large",
+      "status": "failed",
+      "error": "[404] Not Found\nFunction '23bd454d-b225-49a3-8118-582a62fc51b8': Not found for account 'UzOBNkjp9jtwQfeLy2J4I4QZCKWyr04ygK7SRx6QHSk'",
+      "latency_seconds": 0.39
+    },
+    {
+      "model": "mistralai/codestral-22b-instruct-v0.1",
+      "status": "failed",
+      "error": "[404] Not Found\nFunction id '9a10b012-e6df-46fd-83b2-700dcbc75814' version 'null': Specified function in account 'UzOBNkjp9jtwQfeLy2J4I4QZCKWyr04ygK7S",
+      "latency_seconds": 0.38
+    },
+    {
+      "model": "google/gemma-3-12b-it",
+      "status": "failed",
+      "error": "[404] Not Found\nFunction 'ee47df99-c92b-4dc9-b3a7-f3fb0f087b73': Not found for account 'UzOBNkjp9jtwQfeLy2J4I4QZCKWyr04ygK7SRx6QHSk'",
+      "latency_seconds": 0.53
+    },
+    {
+      "model": "google/gemma-3-27b-it",
+      "status": "failed",
+      "error": "[410] Gone\nThe model 'google/gemma-3-27b-it' has reached its end of life on 2026-05-12T00:00:00Z and is no longer available.",
+      "latency_seconds": 0.38
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "status": "failed",
+      "error": "[404] Not Found\nFunction 'c322f327-55a3-4af3-a91f-c757e2b8b135': Not found for account 'UzOBNkjp9jtwQfeLy2J4I4QZCKWyr04ygK7SRx6QHSk'",
+      "latency_seconds": 0.47
+    },
+    {
+      "model": "mistralai/mathstral-7b-v0.1",
+      "status": "failed",
+      "error": "[404] Not Found\n{'_content': b'404 page not found\\n', '_content_consumed': True, '_next': None, 'status_code': 404, 'headers': {'Date': 'Sat, 16 May 2",
+      "latency_seconds": 0.45
+    },
+    {
+      "model": "google/gemma-2-2b-it",
+      "status": "failed",
+      "error": "[422] body -> stream_options\n  Extra inputs are not permitted (type=extra_forbidden)\n{'error': 'body -> stream_options\\n  Extra inputs are not permitt",
+      "latency_seconds": 0.65
+    },
+    {
+      "model": "nvidia/usdcode-llama-3.1-70b-instruct",
+      "status": "failed",
+      "error": "[404] Not Found\n{'_content': b'404 page not found\\n', '_content_consumed': True, '_next': None, 'status_code': 404, 'headers': {'Date': 'Sat, 16 May 2",
+      "latency_seconds": 1.54
+    },
+    {
+      "model": "qwen/qwen2.5-coder-32b-instruct",
+      "status": "failed",
+      "error": "[410] Gone\nThe model 'qwen/qwen2.5-coder-32b-instruct' has reached its end of life on 2026-05-12T00:00:00Z and is no longer available.",
+      "latency_seconds": 0.38
+    },
+    {
+      "model": "zyphra/zamba2-7b-instruct",
+      "status": "failed",
+      "error": "[404] Not Found\nFunction '8378ffb2-51b0-4140-9684-dda1889373e6': Not found for account 'UzOBNkjp9jtwQfeLy2J4I4QZCKWyr04ygK7SRx6QHSk'",
+      "latency_seconds": 0.47
+    },
+    {
+      "model": "moonshotai/kimi-k2-instruct",
+      "status": "failed",
+      "error": "[410] Gone\nThe model 'moonshotai/kimi-k2-instruct' has reached its end of life on 2026-05-12T00:00:00Z and is no longer available.",
+      "latency_seconds": 0.37
+    },
+    {
+      "model": "moonshotai/kimi-k2-instruct-0905",
+      "status": "failed",
+      "error": "[404] Not Found\n{'_content': b'404 page not found\\n', '_content_consumed': True, '_next': None, 'status_code': 404, 'headers': {'Date': 'Sat, 16 May 2",
+      "latency_seconds": 0.43
+    },
+    {
+      "model": "deepseek-ai/deepseek-v3.1-terminus",
+      "status": "failed",
+      "error": "[404] Not Found\n{'_content': b'404 page not found\\n', '_content_consumed': True, '_next': None, 'status_code': 404, 'headers': {'Date': 'Sat, 16 May 2",
+      "latency_seconds": 0.38
+    },
+    {
+      "model": "moonshotai/kimi-k2-thinking",
+      "status": "failed",
+      "error": "[410] Gone\nThe model 'moonshotai/kimi-k2-thinking' has reached its end of life on 2026-05-12T00:00:00Z and is no longer available.",
+      "latency_seconds": 0.36
+    },
+    {
+      "model": "deepseek-ai/deepseek-v3.2",
+      "status": "failed",
+      "error": "[404] Not Found\n{'_content': b'404 page not found\\n', '_content_consumed': True, '_next': None, 'status_code': 404, 'headers': {'Date': 'Sat, 16 May 2",
+      "latency_seconds": 0.37
+    },
+    {
+      "model": "minimaxai/minimax-m2.5",
+      "status": "failed",
+      "error": "[410] Gone\nThe model 'minimaxai/minimax-m2.5' has reached its end of life on 2026-05-12T00:00:00Z and is no longer available.",
+      "latency_seconds": 0.46
+    },
+    {
+      "model": "minimaxai/minimax-m2.7",
+      "status": "failed",
+      "error": "[504] Gateway Timeout\n{'_content': b'', '_content_consumed': True, '_next': None, 'status_code': 504, 'headers': {'Date': 'Sat, 16 May 2026 15:39:02 G",
+      "latency_seconds": 302.38
+    },
+    {
+      "model": "z-ai/glm-5.1",
+      "status": "failed",
+      "error": "[504] Gateway Timeout\n{'_content': b'', '_content_consumed': True, '_next': None, 'status_code': 504, 'headers': {'Date': 'Sat, 16 May 2026 15:44:05 G",
+      "latency_seconds": 302.42
+    },
+    {
+      "model": "deepseek-ai/deepseek-v4-pro",
+      "status": "failed",
+      "error": "[504] Gateway Timeout\n{'_content': b'', '_content_consumed': True, '_next': None, 'status_code': 504, 'headers': {'Date': 'Sat, 16 May 2026 15:49:09 G",
+      "latency_seconds": 302.43
+    },
+    {
+      "model": "deepseek-ai/deepseek-v4-flash",
+      "status": "failed",
+      "error": "[504] Gateway Timeout\n{'_content': b'', '_content_consumed': True, '_next': None, 'status_code': 504, 'headers': {'Date': 'Sat, 16 May 2026 15:54:12 G",
+      "latency_seconds": 302.62
+    }
+  ]
+}

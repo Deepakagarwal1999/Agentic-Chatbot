@@ -1,4 +1,5 @@
 import asyncio
+import math
 import uuid
 from typing import Any
 
@@ -47,11 +48,23 @@ def _get_embeddings() -> Any:
     return _embeddings_instance
 
 
+def _truncate_and_normalize(vector: list[float], target_dims: int) -> list[float]:
+    """Truncate embedding to target dimensions and L2-normalize."""
+    truncated = vector[:target_dims]
+    norm = math.sqrt(sum(x * x for x in truncated))
+    if norm == 0:
+        return truncated
+    return [x / norm for x in truncated]
+
+
 async def embed_text(text: str) -> list[float]:
     """Embed a single text string, running the sync SDK call in a thread pool."""
-    # Use thread pool for long sync calls to avoid blocking the event loop
     embeddings = _get_embeddings()
-    return await asyncio.to_thread(embeddings.embed_query, text)
+    vec = await asyncio.to_thread(embeddings.embed_query, text)
+    # Truncate to configured dimensions if the model outputs more
+    if len(vec) > settings.embedding_dimensions:
+        vec = _truncate_and_normalize(vec, settings.embedding_dimensions)
+    return vec
 
 
 async def index_message(

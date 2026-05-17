@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     llm_max_retries: int = 3
 
     embedding_provider: Literal["openai", "nvidia"] = "nvidia"
-    embedding_model: str = "text-embedding-3-small"
+    embedding_model: str = "nvidia/llama-nemotron-embed-1b-v2"
     embedding_dimensions: int = 1536
 
     jwt_secret_key: str = "change-me"

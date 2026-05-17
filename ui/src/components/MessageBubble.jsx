@@ -1,4 +1,4 @@
-import { User, Bot, Copy, Check, RotateCcw } from 'lucide-react';
+import { User, Bot, Copy, Check, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
 export default function MessageBubble({ role, content, isStreaming, timestamp }) {
@@ -23,57 +23,75 @@ export default function MessageBubble({ role, content, isStreaming, timestamp })
     }, [timestamp]);
 
     return (
-        <div className={`group flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-            {/* Avatar */}
-            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5 ${isUser
-                ? 'bg-gradient-to-br from-primary-500 to-primary-700 shadow-md shadow-primary-600/20'
-                : 'bg-gradient-to-br from-surface-100 to-surface-200 border border-surface-200 shadow-sm'
-                }`}>
-                {isUser
-                    ? <User size={14} className="text-white" />
-                    : <Bot size={14} className="text-surface-600" />
-                }
-            </div>
+        <div className={`group flex gap-3.5 ${isUser ? 'justify-end' : 'justify-start'}`}>
+            {/* Assistant avatar */}
+            {!isUser && (
+                <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center shadow-md shadow-primary-500/15 ring-2 ring-white">
+                    <Bot size={15} className="text-white" />
+                </div>
+            )}
 
             {/* Message content */}
-            <div className={`flex flex-col max-w-[80%] ${isUser ? 'items-end' : 'items-start'}`}>
-                <div className={`relative px-4 py-3 rounded-2xl text-[14px] leading-relaxed ${isUser
-                    ? 'bg-gradient-to-br from-primary-600 to-primary-700 text-white rounded-tr-sm shadow-md shadow-primary-600/15'
-                    : 'bg-white border border-surface-200/80 text-surface-800 rounded-tl-sm shadow-sm'
+            <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[75%] sm:max-w-[70%]`}>
+                {/* Role label */}
+                <span className={`text-[11px] font-semibold mb-1 px-0.5 tracking-wide uppercase ${isUser ? 'text-primary-500' : 'text-surface-400'}`}>
+                    {isUser ? 'You' : 'Assistant'}
+                    {formattedTime && (
+                        <span className="ml-2 font-normal normal-case tracking-normal text-surface-300">
+                            {formattedTime}
+                        </span>
+                    )}
+                </span>
+
+                <div className={`relative px-4 py-3 text-[14px] leading-relaxed ${isUser
+                    ? 'bg-gradient-to-br from-primary-600 to-primary-700 text-white rounded-2xl rounded-tr-md shadow-lg shadow-primary-600/15'
+                    : 'bg-white border border-surface-200/80 text-surface-800 rounded-2xl rounded-tl-md shadow-sm'
                     } ${isStreaming ? 'pulse-glow' : ''}`}>
                     {isUser ? (
-                        <div className={`whitespace-pre-wrap break-words prose-message prose-message-user`}>
+                        <div className="whitespace-pre-wrap break-words prose-message prose-message-user">
                             {content}
                         </div>
                     ) : (
                         <div
                             className={`prose-message break-words ${isStreaming && content ? 'typing-cursor' : ''}`}
-                            dangerouslySetInnerHTML={{ __html: renderedContent || (isStreaming ? '' : '') }}
+                            dangerouslySetInnerHTML={{ __html: renderedContent || '' }}
                         />
                     )}
                 </div>
 
-                {/* Meta row: time + actions */}
-                <div className={`flex items-center gap-2 mt-1 px-1 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-                    {formattedTime && (
-                        <span className="text-[11px] text-surface-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {formattedTime}
-                        </span>
-                    )}
-                    {!isUser && content && !isStreaming && (
-                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                                onClick={handleCopy}
-                                className="flex items-center gap-1 px-2 py-0.5 text-[11px] text-surface-400 hover:text-surface-600 rounded-md hover:bg-surface-100 transition-all"
-                                aria-label="Copy message"
-                            >
-                                {copied ? <Check size={11} className="text-green-500" /> : <Copy size={11} />}
-                                {copied ? 'Copied' : 'Copy'}
-                            </button>
-                        </div>
-                    )}
-                </div>
+                {/* Action buttons for assistant messages */}
+                {!isUser && content && !isStreaming && (
+                    <div className="flex items-center gap-1 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <button
+                            onClick={handleCopy}
+                            className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] text-surface-400 hover:text-surface-700 rounded-lg hover:bg-surface-100 transition-all"
+                            aria-label="Copy message"
+                        >
+                            {copied ? <Check size={12} className="text-green-500" /> : <Copy size={12} />}
+                            {copied ? 'Copied' : 'Copy'}
+                        </button>
+                        <button
+                            className="p-1.5 text-surface-300 hover:text-green-500 rounded-lg hover:bg-green-50 transition-all"
+                            aria-label="Good response"
+                        >
+                            <ThumbsUp size={12} />
+                        </button>
+                        <button
+                            className="p-1.5 text-surface-300 hover:text-red-400 rounded-lg hover:bg-red-50 transition-all"
+                            aria-label="Bad response"
+                        >
+                            <ThumbsDown size={12} />
+                        </button>
+                    </div>
+                )}
             </div>
+
+            {/* User avatar */}
+            {isUser && (
+                <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center shadow-md shadow-primary-700/15 ring-2 ring-white">
+                    <User size={14} className="text-white" />
+                </div>
+            )}
         </div>
     );
 }
@@ -91,7 +109,8 @@ function renderMarkdown(text) {
 
     // Code blocks (```lang\n...\n```)
     html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
-        return `<pre><code class="language-${lang}">${code.trim()}</code></pre>`;
+        const langLabel = lang ? `<span class="code-lang">${lang}</span>` : '';
+        return `<div class="code-block-wrapper">${langLabel}<pre><code class="language-${lang}">${code.trim()}</code></pre></div>`;
     });
 
     // Inline code
@@ -127,8 +146,8 @@ function renderMarkdown(text) {
     // Paragraphs (double newlines)
     html = html.replace(/\n\n/g, '</p><p>');
 
-    // Single newlines (within paragraphs) → <br> only if not inside pre/code
-    html = html.replace(/(?<!<\/pre>|<\/code>|<\/li>|<\/ul>|<\/ol>|<\/h[123]>|<\/blockquote>|<\/hr>)\n(?!<pre|<code|<li|<ul|<ol|<h[123]|<blockquote|<hr)/g, '<br>');
+    // Single newlines → <br> only if not inside pre/code
+    html = html.replace(/(?<!<\/pre>|<\/code>|<\/li>|<\/ul>|<\/ol>|<\/h[123]>|<\/blockquote>|<\/hr>|<\/div>)\n(?!<pre|<code|<li|<ul|<ol|<h[123]|<blockquote|<hr|<div)/g, '<br>');
 
     // Wrap in paragraph if not already wrapped
     if (!html.startsWith('<')) {

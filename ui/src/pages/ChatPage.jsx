@@ -150,8 +150,14 @@ export default function ChatPage() {
 
         try {
             const stream = messagesApi.streamMessage(convId, content);
-            for await (const chunk of stream) {
-                setStreamingContent(prev => prev + chunk);
+            for await (const event of stream) {
+                if (event.type === 'title') {
+                    setConversations(prev =>
+                        prev.map(c => (c.id === convId ? { ...c, title: event.data } : c))
+                    );
+                } else {
+                    setStreamingContent(prev => prev + event.data);
+                }
             }
             await loadMessages(convId);
         } catch (err) {
@@ -189,10 +195,10 @@ export default function ChatPage() {
 
             <main className="flex-1 flex flex-col min-w-0">
                 {/* Header */}
-                <header className="h-14 border-b border-surface-200/80 flex items-center px-4 lg:px-6 bg-white flex-shrink-0">
+                <header className="h-14 border-b border-surface-200/60 flex items-center px-4 lg:px-6 bg-white/80 backdrop-blur-sm flex-shrink-0">
                     <button
                         onClick={() => setSidebarOpen(true)}
-                        className="lg:hidden p-2 -ml-2 mr-3 text-surface-500 hover:text-surface-800 hover:bg-surface-100 rounded-lg transition-all"
+                        className="lg:hidden p-2 -ml-2 mr-3 text-surface-500 hover:text-surface-800 hover:bg-surface-100 rounded-xl transition-all"
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
@@ -202,13 +208,14 @@ export default function ChatPage() {
                             {activeConversation ? (activeConversation.title || 'Untitled Conversation') : 'Select a Conversation'}
                         </h1>
                         {activeConversation && (
-                            <p className="text-[11px] text-surface-400 mt-0.5">
+                            <p className="text-[11px] text-surface-400 mt-0.5 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-400"></span>
                                 {activeConversation.message_count || 0} messages
                             </p>
                         )}
                     </div>
                     {isStreaming && (
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-50 border border-primary-200 rounded-full">
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-50/80 border border-primary-200/60 rounded-full backdrop-blur-sm">
                             <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
                             <span className="text-[11px] font-medium text-primary-700">Generating</span>
                         </div>

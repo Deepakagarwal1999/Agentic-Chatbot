@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import MessageBubble from './MessageBubble';
-import { Sparkles, ArrowDown, MessageSquare, Code, Lightbulb, BookOpen } from 'lucide-react';
+import { Sparkles, ArrowDown, Code, Lightbulb, BookOpen, Zap } from 'lucide-react';
 
 export default function ChatWindow({ messages, isStreaming, streamingContent, onSuggestionClick }) {
     const bottomRef = useRef(null);
@@ -33,15 +33,16 @@ export default function ChatWindow({ messages, isStreaming, streamingContent, on
         <div
             ref={containerRef}
             onScroll={handleScroll}
-            className="flex-1 overflow-y-auto relative bg-surface-50/50"
+            className="flex-1 overflow-y-auto relative"
+            style={{ background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)' }}
         >
             {hasMessages ? (
-                <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
                     {messages.map((msg, index) => (
                         <div
                             key={msg.id}
                             className="animate-fade-in-up"
-                            style={{ animationDelay: `${Math.min(index * 20, 200)}ms` }}
+                            style={{ animationDelay: `${Math.min(index * 30, 200)}ms` }}
                         >
                             <MessageBubble
                                 role={msg.role}
@@ -60,19 +61,22 @@ export default function ChatWindow({ messages, isStreaming, streamingContent, on
 
                     {/* Thinking indicator */}
                     {isStreaming && !streamingContent && (
-                        <div className="flex items-center gap-3 pl-11 animate-fade-in-up">
-                            <div className="flex items-center gap-2 px-4 py-2.5 bg-white border border-surface-200 rounded-2xl rounded-tl-sm shadow-sm">
-                                <div className="flex gap-1">
-                                    <div className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                                    <div className="w-1.5 h-1.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                                    <div className="w-1.5 h-1.5 bg-primary-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                        <div className="flex items-start gap-3.5 animate-fade-in-up">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center shadow-md shadow-primary-500/15 ring-2 ring-white">
+                                <Sparkles size={14} className="text-white" />
+                            </div>
+                            <div className="flex items-center gap-3 px-4 py-3 bg-white border border-surface-200/80 rounded-2xl rounded-tl-md shadow-sm">
+                                <div className="flex gap-1.5">
+                                    <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                                    <div className="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                                    <div className="w-2 h-2 bg-primary-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                                 </div>
-                                <span className="text-surface-400 text-xs font-medium ml-1">Thinking...</span>
+                                <span className="text-surface-400 text-sm font-medium">Thinking...</span>
                             </div>
                         </div>
                     )}
 
-                    <div ref={bottomRef} className="h-1" />
+                    <div ref={bottomRef} className="h-4" />
                 </div>
             ) : (
                 <EmptyState onSuggestionClick={onSuggestionClick} />
@@ -82,10 +86,11 @@ export default function ChatWindow({ messages, isStreaming, streamingContent, on
             {showScrollBtn && (
                 <button
                     onClick={scrollToBottom}
-                    className="absolute bottom-4 right-4 w-9 h-9 bg-white border border-surface-200 rounded-full shadow-lg flex items-center justify-center text-surface-500 hover:text-surface-800 hover:shadow-xl hover:scale-105 transition-all animate-scale-in"
+                    className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm border border-surface-200 rounded-full shadow-lg text-surface-600 hover:text-surface-900 hover:shadow-xl hover:bg-white transition-all animate-scale-in"
                     aria-label="Scroll to bottom"
                 >
-                    <ArrowDown size={16} />
+                    <ArrowDown size={14} />
+                    <span className="text-xs font-medium">New messages</span>
                 </button>
             )}
         </div>
@@ -94,10 +99,10 @@ export default function ChatWindow({ messages, isStreaming, streamingContent, on
 
 function EmptyState({ onSuggestionClick }) {
     const suggestions = [
-        { icon: <Lightbulb size={16} />, title: 'Explain a concept', subtitle: 'Break down complex topics simply' },
-        { icon: <Code size={16} />, title: 'Help me with code', subtitle: 'Debug, write, or review code' },
-        { icon: <Sparkles size={16} />, title: 'Brainstorm ideas', subtitle: 'Creative thinking partner' },
-        { icon: <BookOpen size={16} />, title: 'Summarize content', subtitle: 'Condense long texts quickly' },
+        { icon: <Lightbulb size={18} />, title: 'Explain a concept', subtitle: 'Break down complex topics simply', color: 'from-amber-400 to-orange-500' },
+        { icon: <Code size={18} />, title: 'Help me with code', subtitle: 'Debug, write, or review code', color: 'from-emerald-400 to-teal-500' },
+        { icon: <Zap size={18} />, title: 'Brainstorm ideas', subtitle: 'Creative thinking partner', color: 'from-primary-400 to-purple-500' },
+        { icon: <BookOpen size={18} />, title: 'Summarize content', subtitle: 'Condense long texts quickly', color: 'from-pink-400 to-rose-500' },
     ];
 
     return (
@@ -105,8 +110,8 @@ function EmptyState({ onSuggestionClick }) {
             <div className="max-w-lg text-center">
                 {/* Logo / Icon */}
                 <div className="relative mx-auto mb-8 w-20 h-20">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-purple-600 rounded-3xl rotate-6 opacity-20 blur-sm"></div>
-                    <div className="relative w-20 h-20 bg-gradient-to-br from-primary-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-xl shadow-primary-500/20">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-purple-600 rounded-3xl rotate-6 opacity-20 blur-md scale-110"></div>
+                    <div className="relative w-20 h-20 bg-gradient-to-br from-primary-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-primary-500/25">
                         <Sparkles size={32} className="text-white" />
                     </div>
                 </div>
@@ -114,7 +119,7 @@ function EmptyState({ onSuggestionClick }) {
                 <h2 className="text-2xl font-bold text-surface-900 mb-2">
                     How can I help you today?
                 </h2>
-                <p className="text-surface-500 mb-10 text-[15px]">
+                <p className="text-surface-500 mb-10 text-[15px] leading-relaxed">
                     I'm your AI assistant with memory. I remember our conversations and get better over time.
                 </p>
 
@@ -125,14 +130,14 @@ function EmptyState({ onSuggestionClick }) {
                             key={i}
                             type="button"
                             onClick={() => onSuggestionClick?.(s.title)}
-                            className="group flex items-start gap-3 px-4 py-3.5 bg-white border border-surface-200 rounded-xl text-left hover:border-primary-300 hover:shadow-md hover:shadow-primary-500/5 transition-all"
+                            className="group flex items-start gap-3 px-4 py-4 bg-white border border-surface-200/80 rounded-2xl text-left hover:border-primary-200 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-0.5 transition-all duration-200"
                         >
-                            <span className="flex-shrink-0 w-8 h-8 bg-primary-50 text-primary-600 rounded-lg flex items-center justify-center group-hover:bg-primary-100 transition-colors">
+                            <span className={`flex-shrink-0 w-9 h-9 bg-gradient-to-br ${s.color} rounded-xl flex items-center justify-center text-white shadow-sm group-hover:shadow-md transition-shadow`}>
                                 {s.icon}
                             </span>
                             <div className="min-w-0">
-                                <p className="text-sm font-medium text-surface-800 group-hover:text-primary-700 transition-colors">{s.title}</p>
-                                <p className="text-xs text-surface-400 mt-0.5">{s.subtitle}</p>
+                                <p className="text-sm font-semibold text-surface-800 group-hover:text-primary-700 transition-colors">{s.title}</p>
+                                <p className="text-xs text-surface-400 mt-0.5 leading-relaxed">{s.subtitle}</p>
                             </div>
                         </button>
                     ))}
